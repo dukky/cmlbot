@@ -20,16 +20,19 @@ public class BotTest extends ListenerAdapter {
 
 	/**
 	 * @param args
+	 * @throws InterruptedException 
 	 */
-	public static void main(String[] args) {
-		
+	public static void main(String[] args) throws InterruptedException {
 		PircBotX bot = new PircBotX();
 		bot.getListenerManager().addListener(new BotTest());
+		bot.setLogin("cmlbot");
+		
 		bot.setName("cmlbot");
+		bot.setVersion("Crystal Math Labs bot v0.1");
 		bot.setVerbose(true);
 		try {
-			bot.connect("irc.freenode.net");
-			bot.joinChannel("#dukky");
+			bot.connect("irc.swiftirc.net");
+			bot.joinChannel("#duksandfish");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Error in connecting to network.");
@@ -42,7 +45,7 @@ public class BotTest extends ListenerAdapter {
 		}
 		System.out.println("Connected to network.");
 	}
-	
+
 	@Override
 	public void onInvite(InviteEvent event) throws Exception {
 		System.out.println(event.getChannel());
@@ -51,9 +54,10 @@ public class BotTest extends ListenerAdapter {
 	public void onMessage(MessageEvent event) {
 		String message = event.getMessage();
 		System.out.println(message);
-		
+
 		if (message.equals("?quit")) {
 			System.out.println("quitting");
+			event.getBot().quitServer("Quit command issued.");
 			System.exit(0);
 		} else if (message.startsWith(".")) {
 			Pair<String, ArrayList<String>> pair = parseMessage(message);
@@ -111,7 +115,7 @@ public class BotTest extends ListenerAdapter {
 		}
 
 	}
-	
+
 	private Pair<String, ArrayList<String>> parseMessage(String message) {
 		String[] messageArr = message.split(" ");
 		String command = messageArr[0];
@@ -269,8 +273,7 @@ public class BotTest extends ListenerAdapter {
 								+ " hours.");
 						break;
 					case TTMRANK:
-						event.respond(args.get(0) + "'s Time to max rank is "
-								+ res + ".");
+						event.respond(args.get(0) + "'s Time to max rank is " + res + ".");
 						break;
 					default:
 						break;
