@@ -1,5 +1,5 @@
 package im.duk.cmlbot;
 
 public enum ReqType {
-	TTM, TTMRANK, STATS, TRACK
+	TTM, TTMRANK, STATS, TRACK, PLAYERS
 }

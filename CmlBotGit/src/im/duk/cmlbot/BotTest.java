@@ -1,12 +1,14 @@
 package im.duk.cmlbot;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
@@ -20,19 +22,21 @@ public class BotTest extends ListenerAdapter {
 
 	/**
 	 * @param args
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public static void main(String[] args) throws InterruptedException {
 		PircBotX bot = new PircBotX();
 		bot.getListenerManager().addListener(new BotTest());
 		bot.setLogin("cmlbot");
-		
 		bot.setName("cmlbot");
 		bot.setVersion("Crystal Math Labs bot v0.1");
 		bot.setVerbose(true);
+
 		try {
 			bot.connect("irc.swiftirc.net");
+			
 			bot.joinChannel("#duksandfish");
+			System.out.println("Connected to network.");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Error in connecting to network.");
@@ -43,12 +47,12 @@ public class BotTest extends ListenerAdapter {
 			e.printStackTrace();
 			System.out.println("Error in connecting to network.");
 		}
-		System.out.println("Connected to network.");
 	}
 
 	@Override
 	public void onInvite(InviteEvent event) throws Exception {
 		System.out.println(event.getChannel());
+
 	}
 
 	public void onMessage(MessageEvent event) {
@@ -71,27 +75,29 @@ public class BotTest extends ListenerAdapter {
 				case ".ttmrank":
 					apiReq(event, args, ReqType.TTMRANK);
 					break;
-				/*
-				 * case ".cmltrack": int updated = update(args); if (updated ==
-				 * 1) { apiReq(event, args, ReqType.TRACK); } else {
-				 * event.respond("Error updating user: " + args.get(0) + "."); }
-				 * break;
-				 */
+
+				case ".cmltrack":
+					int updated = update(args);
+					if (updated == 1) {
+						apiReq(event, args, ReqType.TRACK);
+					} else {
+						event.respond("Error updating user: " + args.get(0) + ".");
+					}
+					break;
+
 				case ".cmlstats":
 					int updated2 = update(args);
 					if (updated2 == 1) {
 						apiReq(event, args, ReqType.STATS);
 					} else {
-						event.respond("Error updating user: " + args.get(0)
-								+ ".");
+						event.respond("Error updating user: " + args.get(0) + ".");
 					}
 					break;
 				case ".fkfut":
-					event.getBot().sendMessage(event.getChannel(),
-							"FK FUT!!!!!!!!!!!!!!!!!!!!");
+					event.getBot().sendMessage(event.getChannel(), "FK FUT!!!!!!!!!!!!!!!!!!!!");
 					// event.getBot().sendMessage(event.getUser(), "ok");
-					event.respond("u");
-					event.getBot().sendNotice(event.getUser(), "notice??");
+					//event.respond("u");
+					//event.getBot().sendNotice(event.getUser(), "notice??");
 					break;
 				case ".invite":
 					event.getBot().joinChannel(args.get(0));
@@ -101,8 +107,7 @@ public class BotTest extends ListenerAdapter {
 									"Hello, users of "
 											+ args.get(0)
 											+ "! I am cmlbot, a bot to provide access to the CrystalMathLabs Oldschool Runescape tracker. For a list of commands, type '.commands'."
-											+ " I was invited by "
-											+ event.getUser().getNick() + ".");
+											+ " I was invited by " + event.getUser().getNick() + ".");
 
 				default:
 					break;
@@ -128,14 +133,10 @@ public class BotTest extends ListenerAdapter {
 		return new Pair<String, ArrayList<String>>(command, args);
 	}
 
-	private int update(ArrayList<String> args) throws MalformedURLException,
-			IOException {
-		URL url = new URL(
-				"http://crystalmathlabs.com/tracker/api.php?type=update&player="
-						+ args.get(0));
+	private int update(ArrayList<String> args) throws MalformedURLException, IOException {
+		URL url = new URL("http://crystalmathlabs.com/tracker/api.php?type=update&player=" + args.get(0));
 		URLConnection conn = url.openConnection();
-		BufferedReader read = new BufferedReader(new InputStreamReader(
-				conn.getInputStream()));
+		BufferedReader read = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		String inputString;
 		int res = 0;
 		while ((inputString = read.readLine()) != null) {
@@ -144,8 +145,7 @@ public class BotTest extends ListenerAdapter {
 		return res;
 	}
 
-	private void apiReq(MessageEvent event, ArrayList<String> args, ReqType type)
-			throws IOException {
+	private void apiReq(MessageEvent event, ArrayList<String> args, ReqType type) throws IOException {
 		if (args.size() > 0) {
 			String typeString = null;
 			switch (type) {
@@ -168,12 +168,10 @@ public class BotTest extends ListenerAdapter {
 
 			URL apiUrl = null;
 			try {
-				apiUrl = new URL(
-						"http://crystalmathlabs.com/tracker/api.php?type="
-								+ typeString + "&player=" + args.get(0));
+				apiUrl = new URL("http://crystalmathlabs.com/tracker/api.php?type=" + typeString + "&player="
+						+ args.get(0));
 			} catch (MalformedURLException e) {
-				System.out
-						.println("Malformed url, probably invalid characters in username.");
+				System.out.println("Malformed url, probably invalid characters in username.");
 			}
 			if (type == ReqType.TRACK) {
 				long time = 604800;
@@ -194,15 +192,13 @@ public class BotTest extends ListenerAdapter {
 						return;
 					}
 				}
-				apiUrl = new URL(
-						"http://crystalmathlabs.com/tracker/api.php?type=track&player="
-								+ args.get(0) + "&time=" + time);
+				apiUrl = new URL("http://crystalmathlabs.com/tracker/api.php?type=track&player=" + args.get(0)
+						+ "&time=" + time);
 			}
 
 			URLConnection apiConnection = apiUrl.openConnection();
 			BufferedReader reader;
-			reader = new BufferedReader(new InputStreamReader(
-					apiConnection.getInputStream()));
+			reader = new BufferedReader(new InputStreamReader(apiConnection.getInputStream()));
 			String inputLine;
 			if (type == ReqType.TRACK || type == ReqType.STATS) {
 				ArrayList<String> data = new ArrayList<String>();
@@ -233,16 +229,9 @@ public class BotTest extends ListenerAdapter {
 							res += ".";
 						total += level;
 					}
-					res = "Player "
-							+ args.get(0)
-							+ " Lvl, xp, rank: Overall: "
-							+ total
-							+ ", "
-							+ Integer.parseInt(data.get(1).split(",")[0])
-							+ ", "
-							+ Integer
-									.parseInt(data.get(1).split(",")[1].trim())
-							+ ". " + res;
+					res = "Player " + args.get(0) + " Lvl, xp, rank: Overall: " + total + ", "
+							+ Integer.parseInt(data.get(1).split(",")[0]) + ", "
+							+ Integer.parseInt(data.get(1).split(",")[1].trim()) + ". " + res;
 					String res1 = res.substring(0, res.length() / 2);
 					String res2 = res.substring(res.length() / 2);
 					event.respond(res1);
@@ -255,22 +244,18 @@ public class BotTest extends ListenerAdapter {
 					res = Integer.valueOf(inputLine);
 				}
 				if (res == -1) {
-					event.respond("The username: "
-							+ args.get(0)
-							+ " is not in the database, please add it with \".cmlstats "
-							+ args.get(0)
+					event.respond("The username: " + args.get(0)
+							+ " is not in the database, please add it with \".cmlstats " + args.get(0)
 							+ "\". Note: spaces in usernames must be replaced with underscores.");
 				} else if (res == -2) {
-					event.respond("Invalid username: "
-							+ args.get(0)
+					event.respond("Invalid username: " + args.get(0)
 							+ ". Note: Spaces in usernames must be replaced with underscores.");
 				} else if (res == -3) {
 					event.respond("UH-OH!");
 				} else {
 					switch (type) {
 					case TTM:
-						event.respond(args.get(0) + "'s Time to max is " + res
-								+ " hours.");
+						event.respond(args.get(0) + "'s Time to max is " + res + " hours.");
 						break;
 					case TTMRANK:
 						event.respond(args.get(0) + "'s Time to max rank is " + res + ".");

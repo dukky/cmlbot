@@ -7,4 +7,5 @@ public class Pair<X, Y> {
 		this.first = first;
 		this.second = second;
 	}
+
 }
