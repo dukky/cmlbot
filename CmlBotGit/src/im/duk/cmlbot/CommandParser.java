@@ -3,6 +3,7 @@ package im.duk.cmlbot;
 import im.duk.cmlbot.commands.CommandsCommand;
 import im.duk.cmlbot.commands.PlayersCommand;
 import im.duk.cmlbot.commands.SaveCommand;
+import im.duk.cmlbot.commands.StatsCommand;
 import im.duk.cmlbot.commands.TtmCommand;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class CommandParser {
 	private SaveCommand saveCommand = new SaveCommand();
 	private PlayersCommand playersCommand = new PlayersCommand();
 	private TtmCommand ttmCommand = new TtmCommand();
+	private StatsCommand statsCommand = new StatsCommand();
 	public CommandParser(Set<String> channels) {
 		saveCommand.setChannels(channels);
 	}
@@ -38,6 +40,7 @@ public class CommandParser {
 				case "cmltrack":
 					break;
 				case "cmlstats":
+					statsCommand.process(event, command, commandVisibility);
 					break;
 				case "players":
 					playersCommand.process(event, command, commandVisibility);

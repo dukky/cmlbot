@@ -8,22 +8,97 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class ApiRequest {
+	public static final int SECONDS_IN_DAY = 86400;
+	public static final int SECONDS_IN_WEEK = SECONDS_IN_DAY * 7;
+	public static final int SECONDS_IN_MONTH = SECONDS_IN_DAY * 31;
 
-	public static String request(ReqType type, String player, String time) {
+	public static String request(ReqType type, String player, int time) {
 		switch (type) {
 		case PLAYERS:
 			return playersReq();
 		case STATS:
-			break;
+			return statsReq(player);
 		case TRACK:
-			break;
+			return trackReq(player, time);
 		case TTM:
 			return ttmReq(player);
 		case TTMRANK:
 			return ttmRankReq(player);
+		case UPDATE:
+			return updateReq(player);
 		default:
 			break;
 
+		}
+		return null;
+	}
+
+	private static String trackReq(String player, int time) {
+		if (player != null) {
+			player = player.replace(" ", "_");
+			try {
+				URL trackUrl = new URL("http://crystalmathlabs.com/tracker/api.php?type=update&player=" + player
+						+ "&time=" + time);
+				URLConnection trackUrlConnection = trackUrl.openConnection();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(trackUrlConnection.getInputStream()));
+				String inputLine;
+				String response = "";
+				while ((inputLine = reader.readLine()) != null) {
+					response += inputLine;
+				}
+				return response;
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	private static String updateReq(String player) {
+		if (player != null) {
+			player = player.replace(" ", "_");
+			URL url;
+			try {
+				url = new URL("http://crystalmathlabs.com/tracker/api.php?type=update&player=" + player);
+				URLConnection conn = url.openConnection();
+				BufferedReader read = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+				String inputString;
+				String res = "";
+				while ((inputString = read.readLine()) != null) {
+					res += inputString;
+				}
+				return res;
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	private static String statsReq(String player) {
+		if (player != null) {
+			player = player.replace(" ", "_");
+			try {
+				URL statsUrl = new URL("http://crystalmathlabs.com/tracker/api.php?type=stats&player=" + player);
+				URLConnection statsUrlConnection = statsUrl.openConnection();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(statsUrlConnection.getInputStream()));
+				String inputLine;
+				String response = "";
+				while ((inputLine = reader.readLine()) != null) {
+					response += inputLine;
+				}
+				return response;
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}
@@ -32,7 +107,7 @@ public class ApiRequest {
 		if (player != null) {
 			player = player.replace(" ", "_");
 			try {
-				URL ttmRankUrl = new URL("http://crystalmathlabs.com/tracker/api.php?type=ttm&player=" + player);
+				URL ttmRankUrl = new URL("http://crystalmathlabs.com/tracker/api.php?type=ttmrank&player=" + player);
 				URLConnection ttmRankConnection = ttmRankUrl.openConnection();
 				BufferedReader reader = new BufferedReader(new InputStreamReader(ttmRankConnection.getInputStream()));
 				String inputLine;
@@ -46,7 +121,7 @@ public class ApiRequest {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 		return null;
 	}
@@ -69,17 +144,17 @@ public class ApiRequest {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 		return null;
 	}
 
 	public static String request(ReqType type) {
-		return request(type, null, null);
+		return request(type, null, 0);
 	}
 
 	public static String request(ReqType type, String player) {
-		return request(type, player, null);
+		return request(type, player, 0);
 	}
 
 	private static String playersReq() {
@@ -96,7 +171,6 @@ public class ApiRequest {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
