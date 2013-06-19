@@ -8,9 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class ApiRequest {
-	public static final int SECONDS_IN_DAY = 86400;
-	public static final int SECONDS_IN_WEEK = SECONDS_IN_DAY * 7;
-	public static final int SECONDS_IN_MONTH = SECONDS_IN_DAY * 31;
+
 
 	public static String request(ReqType type, String player, int time) {
 		switch (type) {
@@ -37,7 +35,7 @@ public class ApiRequest {
 		if (player != null) {
 			player = player.replace(" ", "_");
 			try {
-				URL trackUrl = new URL("http://crystalmathlabs.com/tracker/api.php?type=update&player=" + player
+				URL trackUrl = new URL("http://crystalmathlabs.com/tracker/api.php?type=track&player=" + player
 						+ "&time=" + time);
 				URLConnection trackUrlConnection = trackUrl.openConnection();
 				BufferedReader reader = new BufferedReader(new InputStreamReader(trackUrlConnection.getInputStream()));

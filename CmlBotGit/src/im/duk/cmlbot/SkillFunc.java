@@ -1,6 +1,10 @@
 package im.duk.cmlbot;
 
 public class SkillFunc {
+	public static final int SECONDS_IN_DAY = 86400;
+	public static final int SECONDS_IN_WEEK = SECONDS_IN_DAY * 7;
+	public static final int SECONDS_IN_MONTH = SECONDS_IN_DAY * 31;
+	
 	public static int getVirtualLevel(int xp) {
 		double points = 0;
 		int lvlXP = 0;
