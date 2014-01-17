@@ -32,7 +32,6 @@ public class BotMain {
 		bot.getListenerManager().addListener(mainListener);
 		bot.setLogin("cmlbot");
 		bot.setName("cmlbot_test");
-		//bot.identify("UvNE^6CyfRu8R5K");
 		bot.setVersion("Crystal Math Labs bot v1.0");
 		bot.setVerbose(true);
 
